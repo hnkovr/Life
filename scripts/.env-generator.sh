@@ -8,10 +8,10 @@ usage() {
   cat <<EOF
 Usage: $0 [-p <password>] [-pp <host1>=<pwd1> <host2>=<pwd2> ...] [--file <path>] [--example <path>]
 
-Initializes or updates $TARGET_FILE by filling empty *_PASSWORD entries.
+Initializes or updates $TARGET_FILE by filling empty *_PASSWORD and *_KEY entries.
 
 Options:
-  -p <password>                Use one password for all empty password vars.
+  -p <password>                Use one password for all empty password/key vars.
   -pp <host>=<pwd> [...]       Supply per-host passwords (host taken from corresponding *_HOST values).
   --file <path>                Target env file (default: .env)
   --example <path>             Example env file (default: .env.example)
@@ -20,11 +20,11 @@ Options:
 Behavior:
   - If target file does not exist, it is created from the example file if available
     (or created empty otherwise).
-  - For each empty VAR ending with _PASSWORD, the script will try in order:
+  - For each empty VAR ending with _PASSWORD or _KEY, the script will try in order:
       1) Match its corresponding PREFIX_HOST value against -pp mappings and use that password
       2) Use the -p default password if provided
       3) Prompt interactively (hidden input)
-  - Existing non-empty passwords are left unchanged.
+  - Existing non-empty passwords/keys are left unchanged.
 EOF
 }
 
@@ -148,16 +148,16 @@ fi
 # Lock down permissions early
 chmod 600 "$TARGET_FILE" 2>/dev/null || true
 
-# --- Collect password variables ---
-mapfile -t PASSWORD_VARS < <(grep -E '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*_PASSWORD[[:space:]]*=' "$TARGET_FILE" | \
+# --- Collect password and key variables ---
+mapfile -t PASSWORD_VARS < <(grep -E '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*_(PASSWORD|KEY)[[:space:]]*=' "$TARGET_FILE" | \
   sed -E 's/^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*=.*/\1/' | uniq)
 
 if [[ ${#PASSWORD_VARS[@]} -eq 0 ]]; then
-  echo "No *_PASSWORD variables found in $TARGET_FILE. Nothing to do."
+  echo "No *_PASSWORD or *_KEY variables found in $TARGET_FILE. Nothing to do."
   exit 0
 fi
 
-echo "Scanning ${#PASSWORD_VARS[@]} password variables in $TARGET_FILE..."
+echo "Scanning ${#PASSWORD_VARS[@]} password/key variables in $TARGET_FILE..."
 
 UPDATED_COUNT=0
 SKIPPED_COUNT=0
@@ -168,7 +168,18 @@ for var in "${PASSWORD_VARS[@]}"; do
     continue
   fi
 
-  prefix="${var%_PASSWORD}"
+  # Determine prefix by removing either _PASSWORD or _KEY suffix
+  if [[ "$var" == *_PASSWORD ]]; then
+    prefix="${var%_PASSWORD}"
+  elif [[ "$var" == *_KEY ]]; then
+    prefix="${var%_KEY}"
+  else
+    # Should not happen given the grep pattern, but be safe
+    echo "Warning: Variable $var does not end with _PASSWORD or _KEY, skipping" >&2
+    SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+    continue
+  fi
+
   host_var="${prefix}_HOST"
   host_value="$(get_var_value "$host_var" "$TARGET_FILE" | tr -d '\r')"
   host_value_trimmed="$(trim "$host_value")"
@@ -188,9 +199,9 @@ for var in "${PASSWORD_VARS[@]}"; do
 
   if [[ -z "$decided_pwd" ]]; then
     if [[ -n "$host_value_trimmed" ]]; then
-      prompt="Enter password for ${var} (host ${host_value_trimmed}): "
+      prompt="Enter value for ${var} (host ${host_value_trimmed}): "
     else
-      prompt="Enter password for ${var}: "
+      prompt="Enter value for ${var}: "
     fi
     read -r -s -p "$prompt" input_pwd
     echo ""

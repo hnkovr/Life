@@ -1,10 +1,12 @@
 # Variables
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-# Common bash script header
-BASH_HEADER := '''#!/usr/bin/env bash
-set -euo pipefail
-'''
+# Bash utils helper - sourced in recipes that use bu:: functions
+BASH_UTILS := justfile_directory() + "/scripts/lib/bash-utils.sh"
+
+# Bash header for recipes using bu:: functions
+# Note: Justfile variable expansion {{BASH_HEADER}} doesn't work reliably in recipe bodies
+# Use explicit header instead: #!/usr/bin/env bash\n  set -euo pipefail\n  source "{{BASH_UTILS}}"
 
 REPO_ROOT := `pwd`
 HOME_LIFE := env_var("HOME") + "/life"
@@ -12,57 +14,6 @@ HOME_LIFE_DIR := env_var("HOME") + "/.life"
 HOME_MAKE := env_var("HOME") + "/Makefile.life"
 HOME_JUST := env_var("HOME") + "/Justfile.life"
 BIN_DIR := env_var("HOME") + "/bin"
-
-# Helper functions (private)
-[private]
-cmd cmd_name:
-  #!/usr/bin/env bash
-  set -euo pipefail
-  command -v {{cmd_name}} >/dev/null 2>&1
-
-[private]
-die msg:
-  #!/usr/bin/env bash
-  set -euo pipefail
-  echo "ERROR: {{msg}}" >&2
-  exit 1
-
-[private]
-require_cmd cmd_name msg="":
-  #!/usr/bin/env bash
-  set -euo pipefail
-  if ! command -v {{cmd_name}} >/dev/null 2>&1; then
-    MSG="{{msg}}"
-    if [ -z "$MSG" ]; then
-      MSG="{{cmd_name}} is not installed"
-    fi
-    echo "ERROR: $MSG" >&2
-    exit 1
-  fi
-
-[private]
-optional_cmd cmd_name action skip_msg="":
-  #!/usr/bin/env bash
-  set -euo pipefail
-  if command -v {{cmd_name}} >/dev/null 2>&1; then
-    {{action}}
-  else
-    MSG="{{skip_msg}}"
-    if [ -z "$MSG" ]; then
-      MSG="{{cmd_name}} not installed; skipping"
-    fi
-    echo "$MSG"
-  fi
-
-[private]
-func script_path args="":
-  #!/usr/bin/env bash
-  set -euo pipefail
-  if [ -x {{script_path}} ] || [ -f {{script_path}} ]; then
-    bash {{script_path}} {{args}} || true
-  else
-    echo "{{script_path}} not present"
-  fi
 
 default: help
 
@@ -99,46 +50,36 @@ test-internal: ## Run in-file self-tests
 test-external: ## Run Bats tests if installed
   #!/usr/bin/env bash
   set -euo pipefail
-  if ! command -v bats >/dev/null 2>&1; then
-    echo "ERROR: bats not installed; needed for 'just test-external'" >&2
-    echo "Install with 'just tools-install' or via brew install bats-core" >&2
-    exit 1
-  fi
-  echo "> bats detected"
-  bats scripts/tests
+  source "{{BASH_UTILS}}"
+  bu::run_required bats "bats not installed; needed for 'just test-external'. Install with 'just tools-install' or via brew install bats-core" \
+    bash -c "echo '> bats detected'; bats scripts/tests"
 
 shellcheck: ## Run shellcheck on repo scripts if available
   #!/usr/bin/env bash
   set -euo pipefail
-  if command -v shellcheck >/dev/null 2>&1; then
-    echo "> shellcheck"
-    shellcheck -x scripts/*.sh || true
-  else
-    echo "shellcheck not installed; skipping"
-  fi
+  source "{{BASH_UTILS}}"
+  bu::run_optional shellcheck \
+    bash -c "echo '> shellcheck'; shellcheck -x scripts/*.sh || true"
 
 yq-check: ## Show yq version and sample check
   #!/usr/bin/env bash
   set -euo pipefail
-  if command -v yq >/dev/null 2>&1; then
+  source "{{BASH_UTILS}}"
+  bu::run_optional yq \
     yq --version
-  else
-    echo "yq not installed; skipping"
-  fi
 
 dotenv-lint: ## Lint .env with dotenv-linter if available
   #!/usr/bin/env bash
   set -euo pipefail
-  if [ -f .env ] && command -v dotenv-linter >/dev/null 2>&1; then
+  source "{{BASH_UTILS}}"
+  bu::run_if_file_and_cmd .env dotenv-linter \
     dotenv-linter .env
-  else
-    echo "dotenv-linter not installed or .env missing; skipping"
-  fi
 
 direnv-allow: ## Allow direnv for this directory
   #!/usr/bin/env bash
   set -euo pipefail
-  if command -v direnv >/dev/null 2>&1; then
+  source "{{BASH_UTILS}}"
+  if bu::have direnv; then
     direnv allow || true
   else
     echo "direnv not installed; skipping"
@@ -147,11 +88,12 @@ direnv-allow: ## Allow direnv for this directory
 env: ## Print env via shdotenv if available
   #!/usr/bin/env bash
   set -euo pipefail
-  if [ ! -f .env ] && [ -x ./scripts/.env-generator.sh ]; then
-    echo "> generating .env"
-    ./scripts/.env-generator.sh
+  source "{{BASH_UTILS}}"
+  if [ ! -f .env ] && [ -x ./scripts/.env-generator.sh ]; then \
+    echo "> generating .env"; \
+    ./scripts/.env-generator.sh; \
   fi
-  if command -v shdotenv >/dev/null 2>&1; then
+  if bu::have shdotenv; then
     shdotenv -f .env -q -e || true
   else
     echo "shdotenv not installed; skipping"
@@ -160,27 +102,22 @@ env: ## Print env via shdotenv if available
 healthcheck: ## Run repo healthcheck script
   #!/usr/bin/env bash
   set -euo pipefail
-  if [ -x scripts/healthcheck.sh ] || [ -f scripts/healthcheck.sh ]; then
-    bash scripts/healthcheck.sh || true
-  else
-    echo "scripts/healthcheck.sh not present"
-  fi
+  source "{{BASH_UTILS}}"
+  bu::run_script scripts/healthcheck.sh
 
 env-generate: ## Generate/update .env from .env.example (interactive for *_PASSWORD)
   #!/usr/bin/env bash
   set -euo pipefail
+  source "{{BASH_UTILS}}"
   chmod +x ./scripts/.env-generator.sh || true
   ./scripts/.env-generator.sh
 
 bashly-check: ## Show bashly version if installed
   #!/usr/bin/env bash
   set -euo pipefail
-  if ! command -v bashly >/dev/null 2>&1; then
-    echo "ERROR: bashly not installed; required if you want to generate CLIs" >&2
-    exit 1
-  fi
-  echo "> bashly"
-  bashly --version
+  source "{{BASH_UTILS}}"
+  bu::run_required bashly "bashly not installed; required if you want to generate CLIs" \
+    bash -c "echo '> bashly'; bashly --version"
 
 tools-install: ## Install bash tooling (macOS Homebrew / Linux apt)
   bash scripts/tools/install-bash-tools.sh

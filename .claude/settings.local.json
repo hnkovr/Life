@@ -2,7 +2,17 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:github.com)",
-      "Bash(just:*)"
+      "Bash(just:*)",
+      "Bash(make:*)",
+      "Bash(bash -c 'source /Users/nk.myg/gi/@getcher/Life/scripts/lib/bash-utils.sh && type bu::run_optional')",
+      "Bash(bash -c '#!/usr/bin/env bash\nset -euo pipefail\nsource \"\"/Users/nk.myg/gi/@getcher/Life/scripts/lib/bash-utils.sh\"\"\nbu::run_optional yq \"\"yq not installed; skipping\"\" yq --version')",
+      "Bash(git -C /Users/nk.myg/gi/@getcher/Life log --oneline --all -20)",
+      "Bash(find:*)",
+      "Bash(bash -c '#!/usr/bin/env bash\nset -euo pipefail\nsource /Users/nk.myg/gi/@getcher/Life/scripts/lib/bash-utils.sh\nbu::run_optional yq yq --version')",
+      "Bash(bash -n:*)",
+      "Bash(bash:*)",
+      "Bash(git -C /Users/nk.myg/gi/@getcher/Life status --short)",
+      "Bash(grep:*)"
     ]
   }
 }

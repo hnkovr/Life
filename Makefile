@@ -10,8 +10,9 @@ HOME_LIFE_DIR := $(HOME)/.life
 HOME_MAKE := $(HOME)/Makefile.life
 HOME_JUST := $(HOME)/Justfile.life
 
-# Tool discovery helpers
-has = $(shell command -v $(1) >/dev/null 2>&1 && echo 1 || echo 0)
+# Bash utils helper
+BASH_UTILS := scripts/lib/bash-utils.sh
+SOURCE_UTILS := set -euo pipefail; source $(BASH_UTILS);
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*?##/ { printf "\033[36m%-22s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -46,70 +47,50 @@ test-internal: ## Run in-file self-tests (no external deps)
 	@bash -c 'source scripts/life.sh >/dev/null 2>&1; life::selftest'
 
 test-external: ## Run Bats tests if available
-	@if [ "$(call has,bats)" = 1 ]; then \
-	  echo "> bats detected"; bats scripts/tests; \
-	else \
-	  echo "bats not installed; needed for 'make test-external'"; \
-	  echo "Install with 'make tools-install' or via brew install bats-core"; \
-	  exit 1; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_required bats "bats not installed; needed for '\''make test-external'\''. Install with '\''make tools-install'\'' or via brew install bats-core" \
+	  bash -c "echo \"> bats detected\"; bats scripts/tests"'
 
 bashly-check: ## Show bashly version if installed
-	@if [ "$(call has,bashly)" = 1 ]; then \
-	  bashly --version; \
-	else \
-	  echo "bashly not installed; required if you want to generate CLIs"; \
-	  exit 1; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_required bashly "bashly not installed; required if you want to generate CLIs" \
+	  bashly --version'
 
 tools-install: ## Install bash tooling (macOS Homebrew / Linux apt)
 	@bash scripts/tools/install-bash-tools.sh
 
 shellcheck: ## Run shellcheck on repo scripts if available
-	@if [ "$(call has,shellcheck)" = 1 ]; then \
-	  echo "> shellcheck"; shellcheck -x scripts/*.sh || true; \
-	else \
-	  echo "shellcheck not installed; skipping"; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_optional shellcheck "shellcheck not installed; skipping" \
+	  bash -c "echo \"> shellcheck\"; shellcheck -x scripts/*.sh || true"'
 
 yq-check: ## Show yq version and sample check if installed
-	@if [ "$(call has,yq)" = 1 ]; then \
-	  echo "> yq version"; yq --version; \
-	else \
-	  echo "yq not installed; skipping"; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_optional yq "yq not installed; skipping" \
+	  bash -c "echo \"> yq version\"; yq --version"'
 
 dotenv-lint: ## Lint .env if dotenv-linter is installed
-	@if [ -f .env ] && [ "$(call has,dotenv-linter)" = 1 ]; then \
-	  dotenv-linter .env; \
-	else \
-	  echo "dotenv-linter not installed or .env missing; skipping"; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_if_file_and_cmd .env dotenv-linter "dotenv-linter not installed or .env missing; skipping" \
+	  dotenv-linter .env'
 
 direnv-allow: ## Allow direnv in this directory if installed
-	@if [ "$(call has,direnv)" = 1 ]; then \
-	  direnv allow || true; \
-	else \
-	  echo "direnv not installed; skipping"; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_optional direnv "direnv not installed; skipping" \
+	  bash -c "direnv allow || true"'
 
 env: ## Show env loaded with shdotenv if installed
-	@if [ ! -f .env ] && [ -x ./scripts/.env-generator.sh ]; then \
-	  echo "> generating .env"; ./scripts/.env-generator.sh; \
-	fi; \
-	if [ "$(call has,shdotenv)" = 1 ]; then \
-	  shdotenv -f .env -q -e || true; \
-	else \
-	  echo "shdotenv not installed; skipping"; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  if [ ! -f .env ] && [ -x ./scripts/.env-generator.sh ]; then \
+	    echo "> generating .env"; ./scripts/.env-generator.sh; \
+	  fi; \
+	  bu::run_optional shdotenv "shdotenv not installed; skipping" \
+	  bash -c "shdotenv -f .env -q -e || true"'
 
 env-generate: ## Generate/update .env from .env.example (interactive for *_PASSWORD)
 	@chmod +x ./scripts/.env-generator.sh || true
 	@./scripts/.env-generator.sh
 
 healthcheck: ## Run repo healthcheck script (if present)
-	@if [ -x scripts/healthcheck.sh ] || [ -f scripts/healthcheck.sh ]; then \
-	  bash scripts/healthcheck.sh || true; \
-	else \
-	  echo "scripts/healthcheck.sh not present"; \
-	fi
+	@bash -c '$(SOURCE_UTILS) \
+	  bu::run_script scripts/healthcheck.sh'

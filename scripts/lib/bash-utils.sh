@@ -31,3 +31,80 @@ bu::cmd() {
 bu::have() { command -v "$1" >/dev/null 2>&1; }
 bu::need() { local m; for m in "$@"; do bu::have "$m" || bu::die "missing required tool: $m"; done }
 
+# --- High-level command patterns for Make/Just ---
+
+# Run command if tool exists, otherwise skip with message
+# Usage: bu::run_optional toolname [skip_msg] command [args...]
+#   If skip_msg is omitted, uses default: "$tool not installed; skipping"
+bu::run_optional() {
+  local tool="$1"
+  shift
+  local skip_msg=""
+
+  # Check if first arg after tool is a message (not a command/path)
+  if [ $# -gt 0 ] && [[ "$1" != /* ]] && [[ "$1" != ./* ]] && ! command -v "$1" >/dev/null 2>&1; then
+    skip_msg="$1"
+    shift
+  fi
+
+  if bu::have "$tool"; then
+    "$@"
+  else
+    echo "${skip_msg:-$tool not installed; skipping}"
+  fi
+}
+
+# Run command if tool exists, otherwise die with message
+# Usage: bu::run_required toolname [err_msg] command [args...]
+#   If err_msg is omitted, uses default: "$tool is required but not installed"
+bu::run_required() {
+  local tool="$1"
+  shift
+  local err_msg=""
+
+  # Check if first arg after tool is a message (not a command/path)
+  if [ $# -gt 0 ] && [[ "$1" != /* ]] && [[ "$1" != ./* ]] && ! command -v "$1" >/dev/null 2>&1; then
+    err_msg="$1"
+    shift
+  fi
+
+  if ! bu::have "$tool"; then
+    bu::die "${err_msg:-$tool is required but not installed}"
+  fi
+  "$@"
+}
+
+# Run script if it exists (executable or readable)
+# Usage: bu::run_script script_path [args...]
+bu::run_script() {
+  local script="$1"
+  shift
+  if [ -x "$script" ] || [ -f "$script" ]; then
+    bash "$script" "$@" || true
+  else
+    echo "$script not present"
+  fi
+}
+
+# Run command only if both file and tool exist
+# Usage: bu::run_if_file_and_cmd filepath toolname [skip_msg] command [args...]
+#   If skip_msg is omitted, uses default: "$tool not installed or $file missing; skipping"
+bu::run_if_file_and_cmd() {
+  local file="$1"
+  local tool="$2"
+  shift 2
+  local skip_msg=""
+
+  # Check if first arg after tool is a message (not a command/path)
+  if [ $# -gt 0 ] && [[ "$1" != /* ]] && [[ "$1" != ./* ]] && ! command -v "$1" >/dev/null 2>&1; then
+    skip_msg="$1"
+    shift
+  fi
+
+  if [ -f "$file" ] && bu::have "$tool"; then
+    "$@"
+  else
+    echo "${skip_msg:-$tool not installed or $file missing; skipping}"
+  fi
+}
+
