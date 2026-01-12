@@ -11,4 +11,4 @@ tags:
   - task
 ---
 
-- [ ] Заполнить weekly review `[[Work/70_Reviews/weekly/2026-W03]]` [[W-PROJ-bootstrap-life-vault]] [[W-GOAL-bootstrap-life-vault]] #task
+- [x] Заполнить weekly review `[[Work/70_Reviews/weekly/2026-W03]]` [[W-PROJ-bootstrap-life-vault]] [[W-GOAL-bootstrap-life-vault]] #task ✅ 2026-01-12
