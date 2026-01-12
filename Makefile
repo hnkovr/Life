@@ -1,4 +1,4 @@
-.PHONY: help link hardlink unlink test test-internal test-external shellcheck bats yq-check dotenv-lint direnv-allow env healthcheck
+.PHONY: help link hardlink unlink test test-internal test-external shellcheck bats yq-check dotenv-lint direnv-allow env healthcheck tools-install
 
 # Repo paths
 REPO_ROOT := $(CURDIR)
@@ -49,15 +49,21 @@ test-external: ## Run Bats tests if available
 	@if [ "$(call has,bats)" = 1 ]; then \
 	  echo "> bats detected"; bats scripts/tests; \
 	else \
-	  echo "bats not installed; skipping external tests"; \
+	  echo "bats not installed; needed for 'make test-external'"; \
+	  echo "Install with 'make tools-install' or via brew install bats-core"; \
+	  exit 1; \
 	fi
 
 bashly-check: ## Show bashly version if installed
 	@if [ "$(call has,bashly)" = 1 ]; then \
 	  bashly --version; \
 	else \
-	  echo "bashly not installed; skipping"; \
+	  echo "bashly not installed; required if you want to generate CLIs"; \
+	  exit 1; \
 	fi
+
+tools-install: ## Install bash tooling (macOS Homebrew / Linux apt)
+	@bash scripts/tools/install-bash-tools.sh
 
 shellcheck: ## Run shellcheck on repo scripts if available
 	@if [ "$(call has,shellcheck)" = 1 ]; then \
@@ -88,8 +94,8 @@ direnv-allow: ## Allow direnv in this directory if installed
 	fi
 
 env: ## Show env loaded with shdotenv if installed
-	@if [ ! -f .env ] && [ -x ./.env-generator ]; then \
-	  echo "> generating .env"; ./.env-generator; \
+	@if [ ! -f .env ] && [ -x ./scripts/.env-generator.sh ]; then \
+	  echo "> generating .env"; ./scripts/.env-generator.sh; \
 	fi; \
 	if [ "$(call has,shdotenv)" = 1 ]; then \
 	  shdotenv -f .env -q -e || true; \
@@ -98,8 +104,8 @@ env: ## Show env loaded with shdotenv if installed
 	fi
 
 env-generate: ## Generate/update .env from .env.example (interactive for *_PASSWORD)
-	@chmod +x ./.env-generator || true
-	@./.env-generator
+	@chmod +x ./scripts/.env-generator.sh || true
+	@./scripts/.env-generator.sh
 
 healthcheck: ## Run repo healthcheck script (if present)
 	@if [ -x scripts/healthcheck.sh ] || [ -f scripts/healthcheck.sh ]; then \

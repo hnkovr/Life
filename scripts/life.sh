@@ -5,7 +5,7 @@ set -euo pipefail
 LIFE_SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 LIFE_REPO_ROOT="$(cd -- "${LIFE_SCRIPT_DIR}/.." && pwd -P)"
 
-# Optional: load .env via shdotenv if present
+# Optional: load .env via shdotenv if present and source bash utils
 life::load_env() {
   if command -v shdotenv >/dev/null 2>&1; then
     # Load quietly; ignore missing .env
@@ -14,8 +14,15 @@ life::load_env() {
 }
 
 # Logging helpers (optionally integrate with log4bash if available)
-life::log() { printf "[%s] %s\n" "${1:-INFO}" "${2:-}"; }
-life::die() { life::log "ERR" "$*" >&2; exit 1; }
+if [ -f "${LIFE_REPO_ROOT}/scripts/lib/bash-utils.sh" ]; then
+  # shellcheck disable=SC1091
+  source "${LIFE_REPO_ROOT}/scripts/lib/bash-utils.sh"
+  life::log() { bu::log "$@"; }
+  life::die() { bu::die "$@"; }
+else
+  life::log() { printf "[%s] %s\n" "${1:-INFO}" "${2:-}"; }
+  life::die() { life::log "ERR" "$*" >&2; exit 1; }
+fi
 
 life::maybe_init_log4bash() {
   # If a log4bash initializer is available, use it; otherwise fallback to our logger
@@ -207,4 +214,3 @@ else
   # exported functions available to caller
   :
 fi
-

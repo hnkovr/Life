@@ -41,7 +41,7 @@ test-internal: ## Run in-file self-tests
   bash -lc 'source scripts/life.sh >/dev/null 2>&1; life::selftest'
 
 test-external: ## Run Bats tests if installed
-  if command -v bats >/dev/null 2>&1; then echo "> bats detected"; bats scripts/tests; else echo "bats not installed; skipping"; fi
+  if command -v bats >/dev/null 2>&1; then echo "> bats detected"; bats scripts/tests; else echo "bats not installed; needed for 'just test-external'"; echo "Install with 'just tools-install' or via brew install bats-core"; exit 1; fi
 
 shellcheck: ## Run shellcheck on repo scripts if available
   if command -v shellcheck >/dev/null 2>&1; then echo "> shellcheck"; shellcheck -x scripts/*.sh || true; else echo "shellcheck not installed; skipping"; fi
@@ -56,12 +56,18 @@ direnv-allow: ## Allow direnv for this directory
   if command -v direnv >/dev/null 2>&1; then direnv allow || true; else echo "direnv not installed; skipping"; fi
 
 env: ## Print env via shdotenv if available
-  if [ ! -f .env ] && [ -x ./.env-generator ]; then echo "> generating .env"; ./.env-generator; fi
+  if [ ! -f .env ] && [ -x ./scripts/.env-generator.sh ]; then echo "> generating .env"; ./scripts/.env-generator.sh; fi
   if command -v shdotenv >/dev/null 2>&1; then shdotenv -f .env -q -e || true; else echo "shdotenv not installed; skipping"; fi
 
 healthcheck: ## Run repo healthcheck script
   if [ -x scripts/healthcheck.sh ] || [ -f scripts/healthcheck.sh ]; then bash scripts/healthcheck.sh || true; else echo "scripts/healthcheck.sh not present"; fi
 
 env-generate: ## Generate/update .env from .env.example (interactive for *_PASSWORD)
-  chmod +x ./.env-generator || true
-  ./.env-generator
+  chmod +x ./scripts/.env-generator.sh || true
+  ./scripts/.env-generator.sh
+
+bashly-check: ## Show bashly version if installed
+  if command -v bashly >/dev/null 2>&1; then echo "> bashly"; bashly --version; else echo "bashly not installed; required if you want to generate CLIs"; exit 1; fi
+
+tools-install: ## Install bash tooling (macOS Homebrew / Linux apt)
+  bash scripts/tools/install-bash-tools.sh
