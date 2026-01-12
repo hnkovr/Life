@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+
+# Obsidian (machine-specific)
+.obsidian/workspace*
+.obsidian/cache
+.obsidian/graph.json
+.obsidian/hotkeys.json
+
+# Editors
+.idea/
+.vscode/
+
