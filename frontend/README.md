@@ -14,3 +14,12 @@ npm run dev
 VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
+## Тесты (Vitest)
+```
+npm run test
+```
+
+Через just:
+```
+just test
+```

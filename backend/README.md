@@ -2,15 +2,25 @@
 
 Цель: аутентификация (JWT) и CRUD для задач в dev‑окружении (SQLite).
 
-## Быстрый старт
+## Быстрый старт (uv или python)
 
 1) Установите Python 3.11+ и virtualenv.
-2) Создайте виртуальное окружение и установите зависимости:
+2) С использованием just:
+```
+pwd
+cd backend
+pwd
+just setup
+just migrate
+just run
+```
+Или вручную (uv → fallback python):
 ```
 cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+uv venv .venv && uv pip install -r requirements.txt --python .venv/bin/python || true
+test -d .venv || (python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt)
+python manage.py migrate
+python manage.py runserver 8000
 ```
 3) Настройте окружение:
 ```
@@ -33,10 +43,9 @@ python manage.py runserver 8000
 
 ## Тесты
 ```
-pytest -q
+just test
 ```
 
 ## Примечания
 - По умолчанию `DEBUG=1`, база — SQLite (`db.sqlite3`).
 - Для MVP blacklist refresh токенов не используется; logout — статлесс (удаление токенов на клиенте).
-

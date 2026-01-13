@@ -10,6 +10,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "email", "password")
+        extra_kwargs = {
+            "username": {"required": False, "allow_blank": True},
+            "email": {"required": True},
+        }
+
+    def validate_email(self, value: str) -> str:
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email уже используется")
+        return value
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -23,4 +32,3 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-

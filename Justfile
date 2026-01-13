@@ -121,3 +121,39 @@ bashly-check: ## Show bashly version if installed
 
 tools-install: ## Install bash tooling (macOS Homebrew / Linux apt)
   bash scripts/tools/install-bash-tools.sh
+
+# --- Web (backend/frontend) helpers ---
+
+backend-setup:
+  bash -lc 'cd backend && just setup'
+
+backend-run:
+  bash -lc 'cd backend && just run'
+
+backend-test:
+  bash -lc 'cd backend && just test'
+
+frontend-setup:
+  bash -lc 'cd frontend && just setup'
+
+frontend-dev:
+  bash -lc 'cd frontend && just dev'
+
+frontend-test:
+  bash -lc 'cd frontend && just test'
+
+test-web: ## Run backend and frontend tests
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo '==> Backend tests'
+  (cd backend && just test)
+  echo '==> Frontend tests'
+  (cd frontend && just test)
+
+setup-web: ## Setup backend and frontend environments
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo '==> Backend setup'
+  (cd backend && just setup || true)
+  echo '==> Frontend setup'
+  (cd frontend && just setup)

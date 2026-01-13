@@ -3,35 +3,41 @@ set shell := ["bash", "-c"]
 export DJANGO_SETTINGS_MODULE := "life_api.settings.development"
 export PORT := "8000"
 
-# Setup virtualenv and install deps (prefer uv if available)
+# Setup virtualenv and install deps (prefer uv if available). Skip if .venv exists
 setup:
     set -euo pipefail
-    if command -v uv >/dev/null 2>&1; then \
-        uv venv .venv; \
-        uv pip install -r requirements.txt --python .venv/bin/python; \
+    if [ -x .venv/bin/python ]; then \
+        echo '>> .venv already exists; skipping setup'; \
     else \
-        python3 -m venv .venv; \
-        . .venv/bin/activate; \
-        pip install -r requirements.txt; \
+        if command -v uv >/dev/null 2>&1; then \
+            uv venv .venv; \
+            uv pip install -r requirements.txt --python .venv/bin/python; \
+        else \
+            python3 -m venv .venv; \
+            . .venv/bin/activate; \
+            pip install -r requirements.txt; \
+        fi; \
     fi
 
 # Apply migrations
-migrate: setup
+migrate:
     set -euo pipefail
+    if [ ! -x .venv/bin/python ]; then just setup; fi
     .venv/bin/python manage.py migrate
 
 # Run development server
-run: setup
+run:
     set -euo pipefail
+    if [ ! -x .venv/bin/python ]; then just setup; fi
     .venv/bin/python manage.py runserver {{PORT}}
 
 # Run tests
-test: setup
+test:
     set -euo pipefail
+    if [ ! -x .venv/bin/python ]; then just setup; fi
     .venv/bin/pytest -q
 
 # Create superuser (optional)
 createsuperuser: setup
     set -euo pipefail
     .venv/bin/python manage.py createsuperuser
-
