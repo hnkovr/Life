@@ -1,0 +1,37 @@
+set shell := ["bash", "-c"]
+
+export DJANGO_SETTINGS_MODULE := "life_api.settings.development"
+export PORT := "8000"
+
+# Setup virtualenv and install deps (prefer uv if available)
+setup:
+    set -euo pipefail
+    if command -v uv >/dev/null 2>&1; then \
+        uv venv .venv; \
+        uv pip install -r requirements.txt --python .venv/bin/python; \
+    else \
+        python3 -m venv .venv; \
+        . .venv/bin/activate; \
+        pip install -r requirements.txt; \
+    fi
+
+# Apply migrations
+migrate: setup
+    set -euo pipefail
+    .venv/bin/python manage.py migrate
+
+# Run development server
+run: setup
+    set -euo pipefail
+    .venv/bin/python manage.py runserver {{PORT}}
+
+# Run tests
+test: setup
+    set -euo pipefail
+    .venv/bin/pytest -q
+
+# Create superuser (optional)
+createsuperuser: setup
+    set -euo pipefail
+    .venv/bin/python manage.py createsuperuser
+

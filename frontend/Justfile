@@ -1,0 +1,46 @@
+set shell := ["bash", "-c"]
+
+# Install dependencies
+setup:
+    set -euo pipefail
+    if command -v pnpm >/dev/null 2>&1; then \
+        pnpm install; \
+    elif command -v yarn >/dev/null 2>&1; then \
+        yarn install; \
+    else \
+        npm install; \
+    fi
+
+# Run dev server
+dev: setup
+    set -euo pipefail
+    if command -v pnpm >/dev/null 2>&1; then \
+        pnpm run dev; \
+    elif command -v yarn >/dev/null 2>&1; then \
+        yarn dev; \
+    else \
+        npm run dev; \
+    fi
+
+# Build for production
+build: setup
+    set -euo pipefail
+    if command -v pnpm >/dev/null 2>&1; then \
+        pnpm run build; \
+    elif command -v yarn >/dev/null 2>&1; then \
+        yarn build; \
+    else \
+        npm run build; \
+    fi
+
+# Run unit tests
+test: setup
+    set -euo pipefail
+    if command -v pnpm >/dev/null 2>&1; then \
+        pnpm run test; \
+    elif command -v yarn >/dev/null 2>&1; then \
+        yarn test; \
+    else \
+        npm run test; \
+    fi
+

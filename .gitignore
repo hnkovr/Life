@@ -67,3 +67,5 @@ Personal/90_Assets/**
 
 Personal/99_Archive/**
 !Personal/99_Archive/README.md
+/.run.log
+/backend/db.sqlite3
