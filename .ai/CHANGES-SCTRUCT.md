@@ -1,173 +1,117 @@
-Baseline commit: 039375f9244f6b6878155b79c01eab43f94a4df1
+Baseline: 039375f9244f6b6878155b79c01eab43f94a4df1 → HEAD
 
-**Changed/New Structure**
-- `.ai/`
-  - `.ai/TODO.md` (new)
-  - ...
-- `.claude/`
-  - `.claude/CLAUDE.md` (new)
-  - `.claude/AiDevZoomcamp2025-PLAN.md` (new)
-  - `.claude/plans/rustling-spinning-metcalfe.md` (new)
-  - `.claude/settings.local.json` (new)
-  - ...
-- `.`
-  - `.envrc` (new)
-  - `.gitignore` (changed)
-  - `Justfile` (new)
-  - `Makefile` (new)
-  - ...
-- `backend/`
-  - `backend/.env.example` (new)
-  - `backend/Justfile` (new)
-  - `backend/README.md` (new)
-  - `backend/life_api/` (new)
-    - `backend/life_api/settings/base.py` (new)
-    - `backend/life_api/settings/development.py` (new)
-    - `backend/life_api/urls.py` (new)
-    - `backend/life_api/urls_api.py` (new)
-    - `backend/life_api/asgi.py` (new)
-    - `backend/life_api/wsgi.py` (new)
-    - ...
-  - `backend/apps/authentication/` (new)
-    - `backend/apps/authentication/apps.py` (new)
-    - `backend/apps/authentication/serializers.py` (new)
-    - `backend/apps/authentication/views.py` (new)
-    - `backend/apps/authentication/tests/test_*.py` (new)
-    - ...
-  - `backend/apps/tasks/` (new)
-    - `backend/apps/tasks/models.py` (new)
-    - `backend/apps/tasks/serializers.py` (new)
-    - `backend/apps/tasks/views.py` (new)
-    - `backend/apps/tasks/migrations/0001_initial.py` (new)
-    - `backend/apps/tasks/tests/test_*.py` (new)
-    - ...
-  - `backend/manage.py` (new)
-  - `backend/pytest.ini` (new)
-  - `backend/requirements.txt` (new)
-  - ...
-- `frontend/`
-  - `frontend/.env.example` (new)
-  - `frontend/Justfile` (new)
-  - `frontend/README.md` (new)
-  - `frontend/index.html` (new)
-  - `frontend/package.json` (new)
-  - `frontend/postcss.config.js` (new)
-  - `frontend/tailwind.config.js` (new)
-  - `frontend/tests/setup.ts` (new)
-  - `frontend/tsconfig.json` (new)
-  - `frontend/vite.config.ts` (new)
-  - `frontend/src/` (new)
-    - `frontend/src/App.vue` (new)
-    - `frontend/src/main.ts` (new)
-    - `frontend/src/router/index.ts` (new)
-    - `frontend/src/router/__tests__/guard.test.ts` (new)
-    - `frontend/src/services/api.ts` (new)
-    - `frontend/src/services/auth.service.ts` (new)
-    - `frontend/src/services/task.service.ts` (new)
-    - `frontend/src/services/__tests__/*.test.ts` (new)
-    - `frontend/src/stores/auth.ts` (new)
-    - `frontend/src/stores/__tests__/auth.test.ts` (new)
-    - `frontend/src/views/Login.vue` (new)
-    - `frontend/src/views/Register.vue` (new)
-    - `frontend/src/views/Tasks.vue` (new)
-    - `frontend/src/views/__tests__/*.test.ts` (new)
-    - `frontend/src/style.css` (new)
-    - ...
-- `scripts/`
-  - `scripts/.env-generator.sh` (new)
-  - `scripts/lib/bash-utils.sh` (new)
-  - `scripts/life.sh` (new)
-  - `scripts/tests/life.bats` (new)
-  - `scripts/tools/install-bash-tools.sh` (new)
-  - ...
+Legend: (new), (changed), (untracked)
 
-**New Files — Descriptions**
-- `.ai/TODO.md`
-  - Release plan (v0.0.2) for MVP: end-to-end flow register → login (JWT) → tasks CRUD; scope, DoD, and steps for Backend/Frontend.
-- `.claude/CLAUDE.md`
-  - Developer guide for using Claude with this repo: structure, commands (make/just), agent roles, protocols, and required tools.
-- `.claude/AiDevZoomcamp2025-PLAN.md`
-  - Project plan/criteria for AI Dev Zoomcamp 2025 with tasks to document AI development, MCP integration, and architecture.
-- `.claude/plans/rustling-spinning-metcalfe.md`
-  - Incremental roadmap to evolve the vault into a full-stack app; backend-first per feature, then frontend and integration.
-- `.claude/settings.local.json`
-  - Local permissions config for tooling used by AI assistants (allowed commands/providers).
-- `.envrc`
-  - Direnv/shdotenv environment loader for `.env`; prepends `scripts/` to PATH for convenience.
-- `Justfile` / `Makefile`
-  - Task runners for linking symlinks/hardlinks, tests (internal/Bats), shellcheck, yq, dotenv lint, env generation, direnv allow, and backend/frontend helpers.
-
-- `backend/README.md`
-  - Quickstart for Django + DRF backend (SQLite dev), JWT endpoints, and testing instructions.
-- `backend/Justfile`
-  - Backend tasks: setup venv (uv or python), migrate, runserver, pytest.
-- `backend/.env.example`
-  - Template env for backend settings.
-- `backend/requirements.txt`
-  - Python dependencies for backend (Django, DRF, simplejwt, etc.).
-- `backend/pytest.ini`
-  - Pytest configuration for backend tests.
-- `backend/life_api/settings/base.py`
-  - Core Django settings: SQLite DB, CORS enabled, DRF + SimpleJWT auth classes and token lifetimes.
-- `backend/life_api/settings/development.py`
-  - Development overrides (imports base); used via `DJANGO_SETTINGS_MODULE`.
-- `backend/life_api/urls.py` / `urls_api.py`
-  - URL routing; registers `/api/auth/*` (register/login/refresh/logout) and `/api/tasks/*` via DRF router.
-- `backend/life_api/asgi.py` / `wsgi.py`
-  - ASGI/WSGI entrypoints for the Django project.
-- `backend/apps/authentication/*`
-  - ViewSet (`AuthView`) for JWT login/refresh/logout and register; serializers and tests for auth flow and validation.
-- `backend/apps/tasks/*`
-  - Task domain: `Task` model (user FK, title, optional description, status, domain, due_date, completed_at, timestamps), serializers, views, initial migration, and tests.
-- `backend/manage.py`
-  - Django management script.
-
-- `frontend/package.json`
-  - Frontend metadata/scripts; deps: Vue 3, Vue Router, Pinia, Axios; dev deps: Vite, Vitest, jsdom, Tailwind.
-- `frontend/vite.config.ts`
-  - Vite config with Vue plugin, dev server port, and Vitest config (environment jsdom, `tests/setup.ts`).
-- `frontend/.env.example`
-  - Template with `VITE_API_BASE_URL` for backend API.
-- `frontend/Justfile`
-  - Frontend tasks: setup (pnpm/yarn/npm), dev, build, test.
-- `frontend/README.md`
-  - Usage docs: install, dev server, tests, env variables.
-- `frontend/index.html` / `src/App.vue` / `src/main.ts`
-  - App scaffold and entry; Tailwind styles.
-- `frontend/src/router/*`
-  - Router with auth guard and tests.
-- `frontend/src/services/api.ts`
-  - Axios instance with JWT interceptor and automatic refresh on 401 using `/auth/refresh`.
-- `frontend/src/services/auth.service.ts` / `task.service.ts`
-  - Client-side wrappers for auth and tasks API.
-- `frontend/src/stores/auth.ts`
-  - Pinia store managing access/refresh tokens; login/register/logout actions.
-- `frontend/src/views/*`
-  - Pages: Login, Register, Tasks; unit tests in `__tests__`.
-- `frontend/tests/setup.ts` / `tsconfig.json` / `postcss.config.js` / `tailwind.config.js`
-  - Test env setup and tooling configs.
-
-- `scripts/life.sh`
-  - CLI to create/remove symlinks/hardlinks in HOME for this repo; `.env` loading; logging helpers; built-in `selftest`.
-- `scripts/lib/bash-utils.sh`
-  - Lightweight bash utilities: logging, die, optional/required tool runners, script dispatch helpers.
-- `scripts/tests/life.bats`
-  - Bats tests covering link create/remove behaviors for `life.sh`.
-- `scripts/.env-generator.sh`
-  - Interactive/non-interactive initializer to fill empty `*_PASSWORD`/`*_KEY` entries in `.env` from `.env.example`.
-- `scripts/tools/install-bash-tools.sh`
-  - Installer for optional bash tooling (bats-core, shellcheck, yq, etc.).
-
-**Changed Files — Descriptions**
-- `.gitignore`
-  - Added entries: `/.run.log` and `/backend/db.sqlite3` to ignore local run logs and dev SQLite database.
-
-**Untracked Now (local-only)**
-- `frontend/package-lock.json`
-  - NPM lockfile (v3) capturing exact dependency graph; large, auto-generated.
-- `frontend/vitest.config.ts`
-  - Standalone Vitest config (jsdom, `tests/setup.ts`); alternative to config embedded in `vite.config.ts`.
-- `frontend/node_modules/...`
-  - Installed dependencies; ephemeral and usually gitignored.
-- `backend/.../__pycache__/...`
-  - Python bytecode caches; ephemeral and usually gitignored.
+```
+.
+├── .ai
+│   ├── CHANGES-SCTRUCT.md (new)
+│   └── TODO.md (new)
+├── .claude
+│   ├── AiDevZoomcamp2025-PLAN.md (new)
+│   ├── CLAUDE.md (new)
+│   ├── plans
+│   │   └── rustling-spinning-metcalfe.md (new)
+│   └── settings.local.json (new)
+├── .envrc (new)
+├── .gitignore (changed)
+├── Justfile (new)
+├── Makefile (new)
+├── backend
+│   ├── .env.example (new)
+│   ├── Justfile (new)
+│   ├── README.md (new)
+│   ├── apps
+│   │   ├── __init__.py (new)
+│   │   ├── authentication
+│   │   │   ├── __init__.py (new)
+│   │   │   ├── apps.py (new)
+│   │   │   ├── migrations
+│   │   │   │   └── __init__.py (new)
+│   │   │   ├── serializers.py (new)
+│   │   │   ├── tests
+│   │   │   │   ├── test_auth.py (new)
+│   │   │   │   ├── test_auth_extra.py (new)
+│   │   │   │   └── test_register_validation.py (new)
+│   │   │   ├── __pycache__/... (untracked)
+│   │   │   └── views.py (new)
+│   │   ├── tasks
+│   │   │   ├── __init__.py (new)
+│   │   │   ├── apps.py (new)
+│   │   │   ├── migrations
+│   │   │   │   ├── 0001_initial.py (new)
+│   │   │   │   └── __init__.py (new)
+│   │   │   ├── models.py (new)
+│   │   │   ├── serializers.py (new)
+│   │   │   ├── tests
+│   │   │   │   ├── test_filters_permissions.py (new)
+│   │   │   │   ├── test_permissions_unauth.py (new)
+│   │   │   │   └── test_tasks.py (new)
+│   │   │   ├── __pycache__/... (untracked)
+│   │   │   └── views.py (new)
+│   ├── life_api
+│   │   ├── __init__.py (new)
+│   │   ├── asgi.py (new)
+│   │   ├── settings
+│   │   │   ├── __init__.py (new)
+│   │   │   ├── base.py (new)
+│   │   │   └── development.py (new)
+│   │   ├── urls.py (new)
+│   │   ├── urls_api.py (new)
+│   │   ├── wsgi.py (new)
+│   │   └── __pycache__/... (untracked)
+│   ├── manage.py (new)
+│   ├── pytest.ini (new)
+│   └── requirements.txt (new)
+├── frontend
+│   ├── .env.example (new)
+│   ├── Justfile (new)
+│   ├── README.md (new)
+│   ├── index.html (new)
+│   ├── package.json (new)
+│   ├── postcss.config.js (new)
+│   ├── tailwind.config.js (new)
+│   ├── tests
+│   │   └── setup.ts (new)
+│   ├── tsconfig.json (new)
+│   ├── vite.config.ts (new)
+│   ├── src
+│   │   ├── App.vue (new)
+│   │   ├── main.ts (new)
+│   │   ├── router
+│   │   │   ├── __tests__
+│   │   │   │   └── guard.test.ts (new)
+│   │   │   └── index.ts (new)
+│   │   ├── services
+│   │   │   ├── __tests__
+│   │   │   │   ├── api.test.ts (new)
+│   │   │   │   └── refresh.test.ts (new)
+│   │   │   ├── api.ts (new)
+│   │   │   ├── auth.service.ts (new)
+│   │   │   └── task.service.ts (new)
+│   │   ├── stores
+│   │   │   ├── __tests__
+│   │   │   │   └── auth.test.ts (new)
+│   │   │   └── auth.ts (new)
+│   │   ├── views
+│   │   │   ├── __tests__
+│   │   │   │   ├── Login.test.ts (new)
+│   │   │   │   └── Tasks.test.ts (new)
+│   │   │   ├── Login.vue (new)
+│   │   │   ├── Register.vue (new)
+│   │   │   └── Tasks.vue (new)
+│   │   └── style.css (new)
+│   ├── package-lock.json (untracked)
+│   ├── vitest.config.ts (untracked)
+│   └── node_modules/... (untracked)
+├── scripts
+│   ├── .env-generator.sh (new)
+│   ├── lib
+│   │   └── bash-utils.sh (new)
+│   ├── life.sh (new; mode +x)
+│   ├── tests
+│   │   └── life.bats (new)
+│   └── tools
+│   │   └── install-bash-tools.sh (new)
+└── ...
+```
