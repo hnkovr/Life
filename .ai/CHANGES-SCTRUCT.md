@@ -2,115 +2,116 @@ Baseline: 039375f9244f6b6878155b79c01eab43f94a4df1 → HEAD
 
 Legend: + (new), * (changed), (untracked)
 
+<pre>
 .
 ├── .ai
-│   ├── [CHANGES-SCTRUCT.md](.ai/CHANGES-SCTRUCT.md) + — tree of repo changes with per-file notes
-│   └── [TODO.md](.ai/TODO.md) + — release plan v0.0.2 (MVP scope/DoD/steps)
+│   ├── <a href=".ai/CHANGES-SCTRUCT.md">CHANGES-SCTRUCT.md</a> + — tree of repo changes with per-file notes
+│   └── <a href=".ai/TODO.md">TODO.md</a> + — release plan v0.0.2 (MVP scope/DoD/steps)
 ├── .claude
-│   ├── [AiDevZoomcamp2025-PLAN.md](.claude/AiDevZoomcamp2025-PLAN.md) + — program plan and evaluation criteria
-│   ├── [CLAUDE.md](.claude/CLAUDE.md) + — assistant runbook: structure, commands, roles, tools
+│   ├── <a href=".claude/AiDevZoomcamp2025-PLAN.md">AiDevZoomcamp2025-PLAN.md</a> + — program plan and evaluation criteria
+│   ├── <a href=".claude/CLAUDE.md">CLAUDE.md</a> + — assistant runbook: structure, commands, roles, tools
 │   ├── plans
-│   │   └── [rustling-spinning-metcalfe.md](.claude/plans/rustling-spinning-metcalfe.md) + — incremental frontend/backlog plan
-│   └── [settings.local.json](.claude/settings.local.json) + — local permissions/settings for assistant tools
-├── [.envrc](.envrc) + — direnv/shdotenv loader; adds scripts/ to PATH
-├── [.gitignore](.gitignore) * — ignore /.run.log and backend/db.sqlite3
-├── [Justfile](Justfile) + — just recipes: link/unlink, tests, lint, web helpers
-├── [Makefile](Makefile) + — make targets mirroring just tasks
+│   │   └── <a href=".claude/plans/rustling-spinning-metcalfe.md">rustling-spinning-metcalfe.md</a> + — incremental frontend/backlog plan
+│   └── <a href=".claude/settings.local.json">settings.local.json</a> + — local permissions/settings for assistant tools
+├── <a href=".envrc">.envrc</a> + — direnv/shdotenv loader; adds scripts/ to PATH
+├── <a href=".gitignore">.gitignore</a> * — ignore /.run.log and backend/db.sqlite3
+├── <a href="Justfile">Justfile</a> + — just recipes: link/unlink, tests, lint, web helpers
+├── <a href="Makefile">Makefile</a> + — make targets mirroring just tasks
 ├── backend
-│   ├── [.env.example](backend/.env.example) + — backend env template
-│   ├── [Justfile](backend/Justfile) + — backend: setup/migrate/run/test
-│   ├── [README.md](backend/README.md) + — backend quickstart, endpoints, notes
+│   ├── <a href="backend/.env.example">.env.example</a> + — backend env template
+│   ├── <a href="backend/Justfile">Justfile</a> + — backend: setup/migrate/run/test
+│   ├── <a href="backend/README.md">README.md</a> + — backend quickstart, endpoints, notes
 │   ├── apps
-│   │   ├── [__init__.py](backend/apps/__init__.py) + — apps package init
+│   │   ├── <a href="backend/apps/__init__.py">__init__.py</a> + — apps package init
 │   │   ├── authentication
-│   │   │   ├── [__init__.py](backend/apps/authentication/__init__.py) + — auth app init
-│   │   │   ├── [apps.py](backend/apps/authentication/apps.py) + — Django AppConfig
+│   │   │   ├── <a href="backend/apps/authentication/__init__.py">__init__.py</a> + — auth app init
+│   │   │   ├── <a href="backend/apps/authentication/apps.py">apps.py</a> + — Django AppConfig
 │   │   │   ├── migrations
-│   │   │   │   └── [__init__.py](backend/apps/authentication/migrations/__init__.py) + — migrations package
-│   │   │   ├── [serializers.py](backend/apps/authentication/serializers.py) + — register/login validation
+│   │   │   │   └── <a href="backend/apps/authentication/migrations/__init__.py">__init__.py</a> + — migrations package
+│   │   │   ├── <a href="backend/apps/authentication/serializers.py">serializers.py</a> + — register/login validation
 │   │   │   ├── tests
-│   │   │   │   ├── [test_auth.py](backend/apps/authentication/tests/test_auth.py) + — auth flow (login/refresh)
-│   │   │   │   ├── [test_auth_extra.py](backend/apps/authentication/tests/test_auth_extra.py) + — extra auth edge cases
-│   │   │   │   └── [test_register_validation.py](backend/apps/authentication/tests/test_register_validation.py) + — register validation
+│   │   │   │   ├── <a href="backend/apps/authentication/tests/test_auth.py">test_auth.py</a> + — auth flow (login/refresh)
+│   │   │   │   ├── <a href="backend/apps/authentication/tests/test_auth_extra.py">test_auth_extra.py</a> + — extra auth edge cases
+│   │   │   │   └── <a href="backend/apps/authentication/tests/test_register_validation.py">test_register_validation.py</a> + — register validation
 │   │   │   ├── __pycache__/... (untracked) — Python bytecode caches
-│   │   │   └── [views.py](backend/apps/authentication/views.py) + — AuthView: register/login/refresh/logout
+│   │   │   └── <a href="backend/apps/authentication/views.py">views.py</a> + — AuthView: register/login/refresh/logout
 │   │   ├── tasks
-│   │   │   ├── [__init__.py](backend/apps/tasks/__init__.py) + — tasks app init
-│   │   │   ├── [apps.py](backend/apps/tasks/apps.py) + — Django AppConfig
+│   │   │   ├── <a href="backend/apps/tasks/__init__.py">__init__.py</a> + — tasks app init
+│   │   │   ├── <a href="backend/apps/tasks/apps.py">apps.py</a> + — Django AppConfig
 │   │   │   ├── migrations
-│   │   │   │   ├── [0001_initial.py](backend/apps/tasks/migrations/0001_initial.py) + — Task model migration
-│   │   │   │   └── [__init__.py](backend/apps/tasks/migrations/__init__.py) + — migrations package
-│   │   │   ├── [models.py](backend/apps/tasks/models.py) + — Task model (status/domain/dates)
-│   │   │   ├── [serializers.py](backend/apps/tasks/serializers.py) + — Task serializers
+│   │   │   │   ├── <a href="backend/apps/tasks/migrations/0001_initial.py">0001_initial.py</a> + — Task model migration
+│   │   │   │   └── <a href="backend/apps/tasks/migrations/__init__.py">__init__.py</a> + — migrations package
+│   │   │   ├── <a href="backend/apps/tasks/models.py">models.py</a> + — Task model (status/domain/dates)
+│   │   │   ├── <a href="backend/apps/tasks/serializers.py">serializers.py</a> + — Task serializers
 │   │   │   ├── tests
-│   │   │   │   ├── [test_filters_permissions.py](backend/apps/tasks/tests/test_filters_permissions.py) + — filters/permissions
-│   │   │   │   ├── [test_permissions_unauth.py](backend/apps/tasks/tests/test_permissions_unauth.py) + — unauth access tests
-│   │   │   │   └── [test_tasks.py](backend/apps/tasks/tests/test_tasks.py) + — CRUD and complete action
+│   │   │   │   ├── <a href="backend/apps/tasks/tests/test_filters_permissions.py">test_filters_permissions.py</a> + — filters/permissions
+│   │   │   │   ├── <a href="backend/apps/tasks/tests/test_permissions_unauth.py">test_permissions_unauth.py</a> + — unauth access tests
+│   │   │   │   └── <a href="backend/apps/tasks/tests/test_tasks.py">test_tasks.py</a> + — CRUD and complete action
 │   │   │   ├── __pycache__/... (untracked) — Python bytecode caches
-│   │   │   └── [views.py](backend/apps/tasks/views.py) + — TaskViewSet with CRUD/complete
+│   │   │   └── <a href="backend/apps/tasks/views.py">views.py</a> + — TaskViewSet with CRUD/complete
 │   ├── life_api
-│   │   ├── [__init__.py](backend/life_api/__init__.py) + — project package init
-│   │   ├── [asgi.py](backend/life_api/asgi.py) + — ASGI entrypoint
+│   │   ├── <a href="backend/life_api/__init__.py">__init__.py</a> + — project package init
+│   │   ├── <a href="backend/life_api/asgi.py">asgi.py</a> + — ASGI entrypoint
 │   │   ├── settings
-│   │   │   ├── [__init__.py](backend/life_api/settings/__init__.py) + — settings package init
-│   │   │   ├── [base.py](backend/life_api/settings/base.py) + — DRF + JWT config; SQLite dev DB
-│   │   │   └── [development.py](backend/life_api/settings/development.py) + — dev overrides
-│   │   ├── [urls.py](backend/life_api/urls.py) + — root urls incl. API
-│   │   ├── [urls_api.py](backend/life_api/urls_api.py) + — /api routes (auth + tasks)
-│   │   ├── [wsgi.py](backend/life_api/wsgi.py) + — WSGI entrypoint
+│   │   │   ├── <a href="backend/life_api/settings/__init__.py">__init__.py</a> + — settings package init
+│   │   │   ├── <a href="backend/life_api/settings/base.py">base.py</a> + — DRF + JWT config; SQLite dev DB
+│   │   │   └── <a href="backend/life_api/settings/development.py">development.py</a> + — dev overrides
+│   │   ├── <a href="backend/life_api/urls.py">urls.py</a> + — root urls incl. API
+│   │   ├── <a href="backend/life_api/urls_api.py">urls_api.py</a> + — /api routes (auth + tasks)
+│   │   ├── <a href="backend/life_api/wsgi.py">wsgi.py</a> + — WSGI entrypoint
 │   │   └── __pycache__/... (untracked) — Python bytecode caches
-│   ├── [manage.py](backend/manage.py) + — Django management script
-│   ├── [pytest.ini](backend/pytest.ini) + — pytest config
-│   └── [requirements.txt](backend/requirements.txt) + — backend dependencies
+│   ├── <a href="backend/manage.py">manage.py</a> + — Django management script
+│   ├── <a href="backend/pytest.ini">pytest.ini</a> + — pytest config
+│   └── <a href="backend/requirements.txt">requirements.txt</a> + — backend dependencies
 ├── frontend
-│   ├── [.env.example](frontend/.env.example) + — VITE_API_BASE_URL template
-│   ├── [Justfile](frontend/Justfile) + — frontend: setup/dev/build/test
-│   ├── [README.md](frontend/README.md) + — frontend usage and test docs
-│   ├── [index.html](frontend/index.html) + — app entry HTML
-│   ├── [package.json](frontend/package.json) + — deps and npm scripts
-│   ├── [postcss.config.js](frontend/postcss.config.js) + — PostCSS config (Tailwind)
-│   ├── [tailwind.config.js](frontend/tailwind.config.js) + — Tailwind config
+│   ├── <a href="frontend/.env.example">.env.example</a> + — VITE_API_BASE_URL template
+│   ├── <a href="frontend/Justfile">Justfile</a> + — frontend: setup/dev/build/test
+│   ├── <a href="frontend/README.md">README.md</a> + — frontend usage and test docs
+│   ├── <a href="frontend/index.html">index.html</a> + — app entry HTML
+│   ├── <a href="frontend/package.json">package.json</a> + — deps and npm scripts
+│   ├── <a href="frontend/postcss.config.js">postcss.config.js</a> + — PostCSS config (Tailwind)
+│   ├── <a href="frontend/tailwind.config.js">tailwind.config.js</a> + — Tailwind config
 │   ├── tests
-│   │   └── [setup.ts](frontend/tests/setup.ts) + — Vitest setup (jsdom globals)
-│   ├── [tsconfig.json](frontend/tsconfig.json) + — TypeScript config
-│   ├── [vite.config.ts](frontend/vite.config.ts) + — Vite + Vue plugin + Vitest settings
+│   │   └── <a href="frontend/tests/setup.ts">setup.ts</a> + — Vitest setup (jsdom globals)
+│   ├── <a href="frontend/tsconfig.json">tsconfig.json</a> + — TypeScript config
+│   ├── <a href="frontend/vite.config.ts">vite.config.ts</a> + — Vite + Vue plugin + Vitest settings
 │   ├── src
-│   │   ├── [App.vue](frontend/src/App.vue) + — root component
-│   │   ├── [main.ts](frontend/src/main.ts) + — app bootstrap
+│   │   ├── <a href="frontend/src/App.vue">App.vue</a> + — root component
+│   │   ├── <a href="frontend/src/main.ts">main.ts</a> + — app bootstrap
 │   │   ├── router
 │   │   │   ├── __tests__
-│   │   │   │   └── [guard.test.ts](frontend/src/router/__tests__/guard.test.ts) + — auth guard tests
-│   │   │   └── [index.ts](frontend/src/router/index.ts) + — router with auth guard
+│   │   │   │   └── <a href="frontend/src/router/__tests__/guard.test.ts">guard.test.ts</a> + — auth guard tests
+│   │   │   └── <a href="frontend/src/router/index.ts">index.ts</a> + — router with auth guard
 │   │   ├── services
 │   │   │   ├── __tests__
-│   │   │   │   ├── [api.test.ts](frontend/src/services/__tests__/api.test.ts) + — axios instance tests
-│   │   │   │   └── [refresh.test.ts](frontend/src/services/__tests__/refresh.test.ts) + — token refresh logic tests
-│   │   │   ├── [api.ts](frontend/src/services/api.ts) + — axios client with JWT + refresh
-│   │   │   ├── [auth.service.ts](frontend/src/services/auth.service.ts) + — auth API wrappers
-│   │   │   └── [task.service.ts](frontend/src/services/task.service.ts) + — tasks API wrappers
+│   │   │   │   ├── <a href="frontend/src/services/__tests__/api.test.ts">api.test.ts</a> + — axios instance tests
+│   │   │   │   └── <a href="frontend/src/services/__tests__/refresh.test.ts">refresh.test.ts</a> + — token refresh logic tests
+│   │   │   ├── <a href="frontend/src/services/api.ts">api.ts</a> + — axios client with JWT + refresh
+│   │   │   ├── <a href="frontend/src/services/auth.service.ts">auth.service.ts</a> + — auth API wrappers
+│   │   │   └── <a href="frontend/src/services/task.service.ts">task.service.ts</a> + — tasks API wrappers
 │   │   ├── stores
 │   │   │   ├── __tests__
-│   │   │   │   └── [auth.test.ts](frontend/src/stores/__tests__/auth.test.ts) + — auth store tests
-│   │   │   └── [auth.ts](frontend/src/stores/auth.ts) + — Pinia auth store (JWT state)
+│   │   │   │   └── <a href="frontend/src/stores/__tests__/auth.test.ts">auth.test.ts</a> + — auth store tests
+│   │   │   └── <a href="frontend/src/stores/auth.ts">auth.ts</a> + — Pinia auth store (JWT state)
 │   │   ├── views
 │   │   │   ├── __tests__
-│   │   │   │   ├── [Login.test.ts](frontend/src/views/__tests__/Login.test.ts) + — login page tests
-│   │   │   │   └── [Tasks.test.ts](frontend/src/views/__tests__/Tasks.test.ts) + — tasks page tests
-│   │   │   ├── [Login.vue](frontend/src/views/Login.vue) + — login page
-│   │   │   ├── [Register.vue](frontend/src/views/Register.vue) + — register page
-│   │   │   └── [Tasks.vue](frontend/src/views/Tasks.vue) + — tasks list/form page
-│   │   └── [style.css](frontend/src/style.css) + — global styles (Tailwind)
-│   ├── package-lock.json (untracked) — npm lockfile (v3), reproducible installs
-│   ├── vitest.config.ts (untracked) — standalone Vitest config (jsdom)
-│   └── node_modules/... (untracked) — installed dependencies (gitignored)
+│   │   │   │   ├── <a href="frontend/src/views/__tests__/Login.test.ts">Login.test.ts</a> + — login page tests
+│   │   │   │   └── <a href="frontend/src/views/__tests__/Tasks.test.ts">Tasks.test.ts</a> + — tasks page tests
+│   │   │   ├── <a href="frontend/src/views/Login.vue">Login.vue</a> + — login page
+│   │   │   ├── <a href="frontend/src/views/Register.vue">Register.vue</a> + — register page
+│   │   │   └── <a href="frontend/src/views/Tasks.vue">Tasks.vue</a> + — tasks list/form page
+│   │   └── <a href="frontend/src/style.css">style.css</a> + — global styles (Tailwind)
+│   ├── frontend/package-lock.json (untracked) — npm lockfile (v3), reproducible installs
+│   ├── frontend/vitest.config.ts (untracked) — standalone Vitest config (jsdom)
+│   └── frontend/node_modules/... (untracked) — installed dependencies (gitignored)
 ├── scripts
-│   ├── [.env-generator.sh](scripts/.env-generator.sh) + — fill empty *_PASSWORD/KEY in .env
+│   ├── <a href="scripts/.env-generator.sh">.env-generator.sh</a> + — fill empty *_PASSWORD/KEY in .env
 │   ├── lib
-│   │   └── [bash-utils.sh](scripts/lib/bash-utils.sh) + — logging/helpers for scripts
-│   ├── [life.sh](scripts/life.sh) + — CLI to link/unlink repo into HOME; selftests
+│   │   └── <a href="scripts/lib/bash-utils.sh">bash-utils.sh</a> + — logging/helpers for scripts
+│   ├── <a href="scripts/life.sh">life.sh</a> + — CLI to link/unlink repo into HOME; selftests
 │   ├── tests
-│   │   └── [life.bats](scripts/tests/life.bats) + — Bats tests for life.sh
+│   │   └── <a href="scripts/tests/life.bats">life.bats</a> + — Bats tests for life.sh
 │   └── tools
-│       └── [install-bash-tools.sh](scripts/tools/install-bash-tools.sh) + — optional bash tooling installer
+│       └── <a href="scripts/tools/install-bash-tools.sh">install-bash-tools.sh</a> + — optional bash tooling installer
 └── ...
-
+</pre>
